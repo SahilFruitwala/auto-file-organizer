@@ -1,4 +1,3 @@
-from compileall import compile_path
 from os import listdir, mkdir, path
 from shutil import move
 
@@ -60,7 +59,8 @@ class FileOrganizer:
     ZIP_EXT = [
         ".7z",
         ".gzip",
-        ".zip" ".xz",
+        ".zip",
+        ".xz",
         ".bzip2",
         ".rar",
         ".rar5",
@@ -76,6 +76,7 @@ class FileOrganizer:
         self.doc_location = ""
         self.video_location = ""
         self.music_location = ""
+        self.zip_location = ""
         self.other_location = ""
         complete_list = listdir(self.location)
         self.file_list, self.dir_list = self.make_file_list(complete_list)
