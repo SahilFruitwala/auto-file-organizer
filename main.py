@@ -72,80 +72,89 @@ class FileOrganizer:
 
     def __init__(self, location=None):
         self.location = location if location else FileOrganizer.LOCATION
-        self.image_location = ""
-        self.doc_location = ""
-        self.video_location = ""
-        self.music_location = ""
-        self.zip_location = ""
-        self.other_location = ""
+        self.image_file_list = []
+        self.doc_file_list = []
+        self.video_file_list = []
+        self.music_file_list = []
+        self.zip_file_list = []
+        self.other_file_list = []
+        self.dir_list = []
         complete_list = listdir(self.location)
-        self.file_list, self.dir_list = self.make_file_list(complete_list)
+        self.make_file_list(complete_list)
 
-    def make_file_list(self, complete_list: list) -> tuple[list, list]:
+    def make_file_list(self, complete_list: list):
         """Return list of files and directory based on passed list."""
-        file_list = []
-        dir_list = []
         for file in complete_list:
             file_path = path.join(self.location, file)
             if path.isfile(file_path):
-                file_list.append(file_path)
+                file_ext = (path.splitext(file)[1]).lower()
+                if file_ext in FileOrganizer.IMAGE_EXT:
+                    self.image_file_list.append(file_path)
+                elif file_ext in FileOrganizer.DOC_EXT:
+                    self.doc_file_list.append(file_path)
+                elif file_ext in FileOrganizer.VIDEO_EXT:
+                    self.video_file_list.append(file_path)
+                elif file_ext in FileOrganizer.MUSIC_EXT:
+                    self.music_file_list.append(file_path)
+                elif file_ext in FileOrganizer.ZIP_EXT:
+                    self.zip_file_list.append(file_path)
+                else:
+                    self.other_file_list.append(file_path)
             else:
-                dir_list.append(file_path)
-        return file_list, dir_list
+                self.dir_list.append(file_path)
 
     def check_directory(self, dir_location: str) -> None:
         """Check if directory exists or not. If not create one."""
         if not path.exists(dir_location):
             mkdir(dir_location)
 
-    def file_mover(self, extention_list, new_location):
+    def file_mover(self, file_list, new_location):
         """move file based on extension list to new location."""
-        for file in self.file_list:
-            if (path.splitext(file)[1]).lower() in extention_list:
-                move(file, new_location)
+        for file in file_list:
+            move(file, new_location)
 
     def organize_images(self):
         """Organize images based on jpg, jpeg, png, gif, webp extensions."""
 
-        self.image_location = path.join(self.location, "Organized Images")
-        self.check_directory(self.image_location)
+        image_location = path.join(self.location, "Organized Images")
+        self.check_directory(image_location)
 
-        self.file_mover(FileOrganizer.IMAGE_EXT, self.image_location)
+        self.file_mover(self.image_file_list, image_location)
 
     def organize_docs(self):
         """Organize images based on jpg, jpeg, png, gif, webp extensions."""
-        self.doc_location = path.join(self.location, "Organized Documents")
-        self.check_directory(self.doc_location)
+        doc_location = path.join(self.location, "Organized Documents")
+        self.check_directory(doc_location)
 
-        self.file_mover(FileOrganizer.DOC_EXT, self.doc_location)
+        self.file_mover(self.doc_file_list, doc_location)
 
     def organize_videos(self):
         """Organize images based on jpg, jpeg, png, gif, webp extensions."""
-        self.video_location = path.join(self.location, "Organized Videos")
-        self.check_directory(self.video_location)
+        video_location = path.join(self.location, "Organized Videos")
+        self.check_directory(video_location)
 
-        self.file_mover(FileOrganizer.VIDEO_EXT, self.video_location)
+        self.file_mover(self.video_file_list, video_location)
 
     def organize_music(self):
         """Organize images based on jpg, jpeg, png, gif, webp extensions."""
-        self.music_location = path.join(self.location, "Organized Musics")
-        self.check_directory(self.music_location)
+        music_location = path.join(self.location, "Organized Musics")
+        self.check_directory(music_location)
 
-        self.file_mover(FileOrganizer.MUSIC_EXT, self.music_location)
+        self.file_mover(self.music_file_list, music_location)
 
     def organize_zip(self):
         """Organize images based on jpg, jpeg, png, gif, webp extensions."""
-        self.zip_location = path.join(self.location, "Organized Zip Files")
-        self.check_directory(self.zip_location)
+        zip_location = path.join(self.location, "Organized Zip Files")
+        self.check_directory(zip_location)
 
-        self.file_mover(FileOrganizer.ZIP_EXT, self.zip_location)
+        self.file_mover(self.zip_file_list, zip_location)
 
-    # def organize_others(self):
-    #     """Organize images based on jpg, jpeg, png, gif, webp extensions."""
-    #     self.other_location = path.join(self.location, "Organized Other Files")
-    #     self.check_directory(self.other_location)
+    def organize_others(self):
+        """Organize images based on jpg, jpeg, png, gif, webp extensions."""
+        other_location = path.join(self.location, "Organized Other Files")
+        self.check_directory(other_location)
 
-    #     self.file_mover(FileOrganizer.IMAGE_EXT, self.image_location)
+        self.file_mover(self.other_file_list, other_location)
 
     def call_all(self):
         """Call all mover methods"""
@@ -154,10 +163,7 @@ class FileOrganizer:
         self.organize_music()
         self.organize_videos()
         self.organize_zip()
+        self.organize_others()
 
 
 FileOrganizer().call_all()
-
-# get Extension
-# ext = splitext("/Downloads/Frame 5.png")[1]
-# print(ext)
