@@ -1,12 +1,11 @@
 from datetime import datetime
 from os import listdir, makedirs, path
+from pathlib import Path as pathlib
 from shutil import move
 
 
 class FileOrganizer:
     """Organize files of given location or downloads directory."""
-
-    LOCATION = "C://Users//Sahil//Downloads"
 
     IMAGE_EXT = [".jpg", ".png", ".jpeg", ".gif", ".webp", ".eps"]
     DOC_EXT = [
@@ -69,7 +68,9 @@ class FileOrganizer:
     ]
 
     def __init__(self, location=None, option=1):
-        self.location = location if location else FileOrganizer.LOCATION
+        self.location = location if location else str(pathlib.home() / "Downloads")
+        self.option = option
+
         self.image_file_list = []
         self.doc_file_list = []
         self.video_file_list = []
@@ -77,7 +78,7 @@ class FileOrganizer:
         self.zip_file_list = []
         self.other_file_list = []
         self.dir_list = []
-        self.option = option
+        
         complete_list = listdir(self.location)
         self.make_file_list(complete_list)
 
@@ -117,12 +118,15 @@ class FileOrganizer:
     def file_mover(self, file_list, new_location):
         """move file based on extension list to new location."""
         for file in file_list:
+            # Organize file based on creation year, month and file type
             end_path = path.join(
                 self.location, self.get_file_creation_date(file), new_location
             )
             if self.option == 2:
+            # Organize file based on file type
                 end_path = path.join(self.location, new_location)
             if self.option == 3:
+            # Organize file based on creation year, month
                 end_path = path.join(self.location, self.get_file_creation_date(file))
             self.check_directory(end_path)
             move(file, end_path)
@@ -167,4 +171,4 @@ class FileOrganizer:
         self.organize_others()
 
 
-FileOrganizer().call_all()
+FileOrganizer(option=3).call_all()
