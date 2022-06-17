@@ -1,4 +1,5 @@
-from os import listdir, mkdir, path
+from datetime import datetime
+from os import listdir, makedirs, path
 from shutil import move
 
 
@@ -67,7 +68,7 @@ class FileOrganizer:
         ".tgz",
     ]
 
-    def __init__(self, location=None):
+    def __init__(self, location=None, option=1):
         self.location = location if location else FileOrganizer.LOCATION
         self.image_file_list = []
         self.doc_file_list = []
@@ -76,6 +77,7 @@ class FileOrganizer:
         self.zip_file_list = []
         self.other_file_list = []
         self.dir_list = []
+        self.option = option
         complete_list = listdir(self.location)
         self.make_file_list(complete_list)
 
@@ -100,58 +102,60 @@ class FileOrganizer:
             else:
                 self.dir_list.append(file_path)
 
-    def check_directory(self, dir_location: str) -> None:
+    def check_directory(self, dir_location: str):
         """Check if directory exists or not. If not create one."""
         if not path.exists(dir_location):
-            mkdir(dir_location)
+            makedirs(dir_location)
+
+    def get_file_creation_date(self, file_path):
+        """get creation time of file and return string format"""
+        c_time = path.getctime(file_path)
+        date_time = datetime.utcfromtimestamp(c_time)
+        formated_date = date_time.strftime("%Y/%m")
+        return formated_date
 
     def file_mover(self, file_list, new_location):
         """move file based on extension list to new location."""
         for file in file_list:
-            move(file, new_location)
+            end_path = path.join(
+                self.location, self.get_file_creation_date(file), new_location
+            )
+            if self.option == 2:
+                end_path = path.join(self.location, new_location)
+            if self.option == 3:
+                end_path = path.join(self.location, self.get_file_creation_date(file))
+            self.check_directory(end_path)
+            move(file, end_path)
 
     def organize_images(self):
         """Organize images based on jpg, jpeg, png, gif, webp extensions."""
 
-        image_location = path.join(self.location, "Organized Images")
-        self.check_directory(image_location)
-
-        self.file_mover(self.image_file_list, image_location)
+        self.file_mover(self.image_file_list, "Organized Images")
 
     def organize_docs(self):
         """Organize images based on jpg, jpeg, png, gif, webp extensions."""
-        doc_location = path.join(self.location, "Organized Documents")
-        self.check_directory(doc_location)
 
-        self.file_mover(self.doc_file_list, doc_location)
+        self.file_mover(self.doc_file_list, "Organized Documents")
 
     def organize_videos(self):
         """Organize images based on jpg, jpeg, png, gif, webp extensions."""
-        video_location = path.join(self.location, "Organized Videos")
-        self.check_directory(video_location)
 
-        self.file_mover(self.video_file_list, video_location)
+        self.file_mover(self.video_file_list, "Organized Videos")
 
     def organize_music(self):
         """Organize images based on jpg, jpeg, png, gif, webp extensions."""
-        music_location = path.join(self.location, "Organized Musics")
-        self.check_directory(music_location)
 
-        self.file_mover(self.music_file_list, music_location)
+        self.file_mover(self.music_file_list, "Organized Musics")
 
     def organize_zip(self):
         """Organize images based on jpg, jpeg, png, gif, webp extensions."""
-        zip_location = path.join(self.location, "Organized Zip Files")
-        self.check_directory(zip_location)
 
-        self.file_mover(self.zip_file_list, zip_location)
+        self.file_mover(self.zip_file_list, "Organized Zip Files")
 
     def organize_others(self):
         """Organize images based on jpg, jpeg, png, gif, webp extensions."""
-        other_location = path.join(self.location, "Organized Other Files")
-        self.check_directory(other_location)
 
-        self.file_mover(self.other_file_list, other_location)
+        self.file_mover(self.other_file_list, "Organized Other Files")
 
     def call_all(self):
         """Call all mover methods"""
