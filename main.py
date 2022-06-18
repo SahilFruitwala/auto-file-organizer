@@ -78,7 +78,7 @@ class FileOrganizer:
         self.zip_file_list = []
         self.other_file_list = []
         self.dir_list = []
-        
+
         complete_list = listdir(self.location)
         self.make_file_list(complete_list)
 
@@ -123,41 +123,41 @@ class FileOrganizer:
                 self.location, self.get_file_creation_date(file), new_location
             )
             if self.option == 2:
-            # Organize file based on file type
+                # Organize file based on file type
                 end_path = path.join(self.location, new_location)
             if self.option == 3:
-            # Organize file based on creation year, month
+                # Organize file based on creation year, month
                 end_path = path.join(self.location, self.get_file_creation_date(file))
             self.check_directory(end_path)
             move(file, end_path)
 
     def organize_images(self):
-        """Organize images based on jpg, jpeg, png, gif, webp extensions."""
+        """Organize images files"""
 
         self.file_mover(self.image_file_list, "Organized Images")
 
     def organize_docs(self):
-        """Organize images based on jpg, jpeg, png, gif, webp extensions."""
+        """Organize documents files"""
 
         self.file_mover(self.doc_file_list, "Organized Documents")
 
     def organize_videos(self):
-        """Organize images based on jpg, jpeg, png, gif, webp extensions."""
+        """Organize videos files"""
 
         self.file_mover(self.video_file_list, "Organized Videos")
 
     def organize_music(self):
-        """Organize images based on jpg, jpeg, png, gif, webp extensions."""
+        """Organize audio files"""
 
         self.file_mover(self.music_file_list, "Organized Musics")
 
     def organize_zip(self):
-        """Organize images based on jpg, jpeg, png, gif, webp extensions."""
+        """Organize zip files"""
 
         self.file_mover(self.zip_file_list, "Organized Zip Files")
 
     def organize_others(self):
-        """Organize images based on jpg, jpeg, png, gif, webp extensions."""
+        """Organize all other type of files"""
 
         self.file_mover(self.other_file_list, "Organized Other Files")
 
